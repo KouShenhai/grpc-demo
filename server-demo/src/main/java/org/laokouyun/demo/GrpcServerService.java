@@ -4,11 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.laokouyun.demo.proto.HelloWorldProto;
 import org.laokouyun.demo.proto.SimpleGrpc;
-import org.springframework.stereotype.Service;
+import org.springframework.grpc.server.service.GrpcService;
 
 import io.grpc.stub.StreamObserver;
 
-@Service
+@GrpcService
 public class GrpcServerService extends SimpleGrpc.SimpleImplBase {
 
 	private static final Log log = LogFactory.getLog(GrpcServerService.class);

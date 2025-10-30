@@ -1,3 +1,12 @@
 spring:
   application:
     name: server-demo
+  grpc:
+    server:
+      servlet:
+        enabled: false
+      port: 9097
+    client:
+      default-channel:
+        health:
+          service-name: test

@@ -1,13 +1,12 @@
 package org.laokouyun.demo;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.laokouyun.**")
 public class ServerDemoApplication {
 
-    public static void main(String[] args) {
+
+    static void main(String[] args) {
         SpringApplication.run(ServerDemoApplication.class, args);
     }
-
 }

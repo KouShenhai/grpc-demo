@@ -8,5 +8,4 @@ spring:
       port: 9097
     client:
       default-channel:
-        health:
-          service-name: test
+        address: 0.0.0.0:9097

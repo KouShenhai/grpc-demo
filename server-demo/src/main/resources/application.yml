@@ -6,6 +6,3 @@ spring:
       servlet:
         enabled: false
       port: 9097
-    client:
-      default-channel:
-        address: 0.0.0.0:9097

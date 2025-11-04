@@ -26,7 +26,7 @@ spring:
         # 超过30秒，则标记为不健康
         heart-beat-timeout: 30000
         metadata:
-          gRPC_port: 9097
+          grpc_port: 9097
       config:
         # 开启配置中心
         enabled: true

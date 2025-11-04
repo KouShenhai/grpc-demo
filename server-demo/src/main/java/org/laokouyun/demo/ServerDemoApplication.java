@@ -15,7 +15,7 @@ import java.time.Duration;
 @SpringBootApplication(scanBasePackages = "org.laokouyun.**")
 public class ServerDemoApplication implements CommandLineRunner {
 
-    private final GpcClientManager gpcClientManager;
+    private final GpcClientUtils gpcClientUtils;
 
     static void main(String[] args) {
         SpringApplication.run(ServerDemoApplication.class, args);
@@ -25,7 +25,7 @@ public class ServerDemoApplication implements CommandLineRunner {
     public void run(String... args) throws StatusException, InterruptedException {
         Thread.sleep(Duration.ofSeconds(10));
         for (int i = 0; i < 10; i++) {
-            SimpleGrpc.SimpleBlockingV2Stub stub2 = gpcClientManager.getStub("server-demo", SimpleGrpc.SimpleBlockingV2Stub.class);
+            SimpleGrpc.SimpleBlockingV2Stub stub2 = gpcClientUtils.getStub("server-demo", SimpleGrpc.SimpleBlockingV2Stub.class);
             System.out.println(stub2.sayHello(HelloWorldProto.HelloRequest.newBuilder().setName("test").build()));
         }
     }

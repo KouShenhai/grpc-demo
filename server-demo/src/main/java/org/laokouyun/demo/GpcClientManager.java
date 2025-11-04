@@ -1,5 +1,6 @@
 package org.laokouyun.demo;
 
+import io.grpc.stub.AbstractBlockingStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
@@ -19,7 +20,7 @@ public class GpcClientManager {
     private final GrpcClientFactory grpcClientFactory;
 
     @SuppressWarnings("unchecked")
-    public <T> T getStub(String serviceId, Class<T> clazz) {
+    public <T extends AbstractBlockingStub<T>> T getStub(String serviceId, Class<T> clazz) {
         ServiceInstance serviceInstance = loadBalancerClient.choose(serviceId);
         if (serviceInstance == null) {
             throw new IllegalStateException(serviceId + " is not available");

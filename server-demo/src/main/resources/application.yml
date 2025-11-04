@@ -6,3 +6,37 @@ spring:
       servlet:
         enabled: false
       port: 9097
+  cloud:
+    nacos:
+      discovery:
+        # 开启服务注册&发现
+        enabled: true
+        server-addr: localhost:8848
+        namespace: public
+        username: nacos
+        password: nacos
+        group: DEFAULT_GROUP
+        # true 临时 false 持久
+        ephemeral: true
+        heart-beat:
+          # 开启心跳检测
+          enabled: true
+        # 每10秒发送一次心跳【单位毫秒】
+        heart-beat-interval: 10000
+        # 超过30秒，则标记为不健康
+        heart-beat-timeout: 30000
+        metadata:
+          gRPC_port: 9097
+      config:
+        # 开启配置中心
+        enabled: true
+        server-addr: localhost:8848
+        namespace: public
+        username: nacos
+        password: nacos
+        # 指定读取的文件格式
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        refresh-enabled: true
+server:
+  port: 8085

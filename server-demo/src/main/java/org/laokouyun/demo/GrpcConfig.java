@@ -1,21 +1,21 @@
 package org.laokouyun.demo;
 
-
-import org.laokouyun.demo.proto.SimpleGrpc;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.grpc.client.GrpcChannelFactory;
+import org.springframework.grpc.client.GrpcClientFactory;
 
 @Configuration
-public class GrpcConfig {
-
+class GrpcConfig {
 
     @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    SimpleGrpc.SimpleBlockingV2Stub simpleBlockingV2Stub(GrpcChannelFactory channelFactory) {
-        return SimpleGrpc.newBlockingV2Stub(channelFactory.createChannel("localhost:9097"));
+    GrpcClientFactory grpcClientFactory(GrpcChannelFactory grpcChannelFactory) {
+        StaticApplicationContext context = new StaticApplicationContext();
+        GrpcClientFactory grpcClientFactory = new GrpcClientFactory();
+        context.registerBean(GrpcChannelFactory.class, () -> grpcChannelFactory);
+        grpcClientFactory.setApplicationContext(context);
+        return grpcClientFactory;
     }
 
 }

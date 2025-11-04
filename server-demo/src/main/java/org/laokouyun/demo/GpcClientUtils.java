@@ -25,9 +25,9 @@ public class GpcClientUtils {
     private final GrpcClientFactory grpcClientFactory;
 
     @SuppressWarnings("unchecked")
-    public <T, V> V invoke(Supplier<V> supplier, Class<T> clazz, Method method, Object... args) {
+    public <V> V invoke(Supplier<V> supplier, Object target, Method method, Object... args) {
         ReflectionUtils.makeAccessible(method);
-        return (V) ReflectionUtils.invokeMethod(method, clazz, args);
+        return (V) ReflectionUtils.invokeMethod(method, target, args);
     }
 
     @SuppressWarnings("unchecked")

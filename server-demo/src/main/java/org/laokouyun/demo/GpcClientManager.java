@@ -6,29 +6,18 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.grpc.client.GrpcClientFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Component
 @RequiredArgsConstructor
-public class GpcClientUtils {
+public class GpcClientManager {
 
     private final Map<String, Object> stubMap = new ConcurrentHashMap<>();
 
     private final LoadBalancerClient loadBalancerClient;
 
     private final GrpcClientFactory grpcClientFactory;
-
-    @SuppressWarnings("unchecked")
-    public <V> V invoke(Supplier<V> supplier, Object target, Method method, Object... args) {
-        ReflectionUtils.makeAccessible(method);
-        return (V) ReflectionUtils.invokeMethod(method, target, args);
-    }
 
     @SuppressWarnings("unchecked")
     public <T extends AbstractBlockingStub<T>> T getStub(String serviceId, Class<T> clazz) {

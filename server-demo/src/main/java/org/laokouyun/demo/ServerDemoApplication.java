@@ -7,7 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-
 import java.time.Duration;
 
 @EnableDiscoveryClient
@@ -15,7 +14,7 @@ import java.time.Duration;
 @SpringBootApplication(scanBasePackages = "org.laokouyun.**")
 public class ServerDemoApplication implements CommandLineRunner {
 
-    private final GpcClientUtils gpcClientUtils;
+    private final GpcClientManager gpcClientManager;
 
     static void main(String[] args) {
         SpringApplication.run(ServerDemoApplication.class, args);
@@ -25,8 +24,9 @@ public class ServerDemoApplication implements CommandLineRunner {
     public void run(String... args) throws StatusException, InterruptedException {
         Thread.sleep(Duration.ofSeconds(10));
         for (int i = 0; i < 10; i++) {
-            SimpleGrpc.SimpleBlockingV2Stub stub2 = gpcClientUtils.getStub("server-demo", SimpleGrpc.SimpleBlockingV2Stub.class);
-            System.out.println(stub2.sayHello(HelloWorldProto.HelloRequest.newBuilder().setName("test").build()));
+            SimpleGrpc.SimpleBlockingV2Stub stub2 = gpcClientManager.getStub("server-demo", SimpleGrpc.SimpleBlockingV2Stub.class);
+            HelloWorldProto.HelloRequest test = HelloWorldProto.HelloRequest.newBuilder().setName("test").build();
+            System.out.println(stub2.sayHello(test));
         }
     }
 

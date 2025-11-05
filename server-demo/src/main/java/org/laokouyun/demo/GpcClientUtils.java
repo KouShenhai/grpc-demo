@@ -1,6 +1,6 @@
 package org.laokouyun.demo;
 
-import io.grpc.StatusException;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.AbstractBlockingStub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @RequiredArgsConstructor
-public class GpcClientManager {
+public class GpcClientUtils {
 
     private final Map<String, Object> stubMap = new ConcurrentHashMap<>();
 
@@ -24,28 +24,26 @@ public class GpcClientManager {
 
     private final GrpcClientFactory grpcClientFactory;
 
-    public <V> V invoke(GrpcCallback<V> grpcCallback, Object target, Method method, Object...args) {
-        Exception exception = new RuntimeException();
-        V callback = null;
-        for (int i = 1; i <= 3; i++) {
-            if (!Objects.isNull(exception)) {
-                try {
-                    callback = grpcCallback.get();
-                    exception = null;
-                } catch (Exception ex) {
-                    exception = ex;
+    private int maxRetry = 3;
+    private int waitMillis = 100;
+
+    public <T extends AbstractBlockingStub<T>> Object invoke(String serviceId, Class<T> clazz, Method method, Object...args) throws Exception {
+        for (int attempt  = 1; attempt  <= maxRetry; attempt++) {
+            try {
+                return ReflectionUtils.invokeMethod(method, getStub(serviceId, clazz), args);
+            } catch (Exception ex) {
+                if (!(ex instanceof StatusRuntimeException)) {
+                    throw ex;
+                } else {
+                    Thread.sleep(Duration.ofMillis(waitMillis));
                 }
             }
         }
-        if (exception instanceof StatusException) {
-            ReflectionUtils.makeAccessible(method);
-            ReflectionUtils.invokeMethod(method, target, args);
-        }
-        return callback;
+        return ReflectionUtils.invokeMethod(method, FallbackFactory.getFallback(clazz), args);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AbstractBlockingStub<T>> T getStub(String serviceId, Class<T> clazz) {
+    private <T extends AbstractBlockingStub<T>> T getStub(String serviceId, Class<T> clazz) {
         ServiceInstance serviceInstance = loadBalancerClient.choose(serviceId);
         if (serviceInstance == null) {
             throw new IllegalStateException(serviceId + " is not available");
